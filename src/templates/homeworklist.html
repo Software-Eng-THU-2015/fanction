@@ -1,0 +1,114 @@
+ {% autoescape off %}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="{{url_for("static", filename="css/mobilestyle.css")}}">
+	<script src="{{url_for("static", filename="scripts/jquery1-11-3.js")}}"></script>
+	<script type="text/javascript">
+		$(document).bind('mobileinit',function()
+		{
+			$.mobile.changePage.defaults.changeHash = false;
+			$.mobile.hashListeningEnabled = false;
+			$.mobile.pushStateEnabled = false;
+			$.support.touchOverflow = true;
+	 		$.mobile.touchOverflowEnabled = true;
+		});
+	</script>
+	<script src="{{url_for("static", filename="scripts/jquerymobile.js")}}"></script>
+</head>
+<body class ="hwbg">
+	<div data-role="page" id="pageone" class ="hwbg">
+		<div data-role="main" class="ui-content">
+			<div id = "footerhw">
+				<div id = "hwtitle">
+					未截止的作业
+				</div>
+			</div>
+			<img src="{{url_for("static", filename="images/tick.png")}}" id = "tick">
+			<div id = "description">
+				 已经提交
+			</div>
+			<img src="{{url_for("static", filename="images/cross.png")}}" id = "cross">
+			<div id = "description1">
+				 尚未提交
+			</div>
+			<div id = "footerhw1">
+			</div>
+			<ul data-role="listview" data-inset="true" id = "hwlist">
+				{% for group in homeworks %}
+				<li data-role="list-divider">截止日期: {{ group["endDate"] }}</li>
+					{% for homework in group["homeworkGroup"] %}
+					<li id="{{homework["id"]}}" onclick="reply_click('{{homework["id"]}}')" >
+						<a href="#pagetwo">
+						{{homework["_CourseName"]}}:{{homework["_Title"]}}
+						{% if homework["_Finished"] %}
+						<img src="{{url_for("static", filename="images/tick.png")}}" alt="TICK" class="ui-li-icon">
+						{% else %}
+						<img src="{{url_for("static", filename="images/cross.png")}}" alt="CROSS" class="ui-li-icon">
+						{% endif %}
+						</a>
+					</li>
+					{% endfor %}
+				{% endfor %}
+			</ul>
+	    	</ul>
+	  	</div>
+	</div>
+	<script type="text/javascript">
+		
+ 		function reply_click (id) {
+ 			/*
+ 			 *  Implement your code here.
+ 			 *  Initialize homeworkname and homeworkrequirements.
+ 			 */
+			var homeworkname = "软件工程|迭代一展示";
+			var homeworkrequirements = "作业要求：写一段尽可能complex的代码。";
+			if (id == "-1")
+			{
+			}
+			{% for group in homeworks %}
+			{% for homework in group["homeworkGroup"] %}
+			else if (id == "{{homework["id"]}}")
+			{
+				homeworkname = "{{homework["_CourseName"]}}"+"|"+"{{homework["_Title"]}}"
+				homeworkrequirements = "{{homework["_Text"]}}"
+			}
+			{% endfor %}
+			{% endfor %}
+			$("#page2head").text(homeworkname)
+			$("#page2p").html(homeworkrequirements)
+ 		}
+	</script>
+
+
+
+	<div data-role="page" data-dialog="true" id="pagetwo" class = "movedown" >
+<!--		<div id = "footerhw">
+	    <div id = "hwtitle">
+	    	未截止的作业
+	    </div>
+	</div>
+	<img src="{{url_for("static", filename="images/tick.png")}}" id = "tick">
+	<div id = "description">
+		已经提交
+	</div>
+	<img src="{{url_for("static", filename="images/tick.png")}}" id = "cross">
+	<div id = "description1">
+		尚未提交
+	</div>
+	<div id = "footerhw1">
+	</div>  -->
+	  <div data-role="header">
+	    <h1 id="page2head"></h1>
+	  </div>
+
+	  <div data-role="main" class="ui-content" id = "contentpage">
+	    <p id="page2p"></p>
+	    <a href="#pageone">返回</a>
+	  </div>
+	</div>
+</body>
+</html>
+ {% endautoescape %}
